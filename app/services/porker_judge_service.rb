@@ -27,7 +27,7 @@ module PorkerJudgeService
         @numbers = []
         @hand_array.each do |hand|
           @suits.push(hand.slice(0).to_s)
-          @numbers.push(hand.gsub(/[^\d]/, "").to_s)
+          @numbers.push(hand.gsub(/[^\d]/, ""))
         end
 
 #   取り出したスートと数字を再度並べてみる:もともとのものと比較するため
@@ -64,7 +64,7 @@ module PorkerJudgeService
 
 #   重複がないか
         if hand_check.uniq.count != hand_check.count && @error_messages.blank?
-          error_message5 = "カードが重複しています"
+          error_message5 = "カードが重複しています。"
           @error_messages.push(error_message5)
         end
 
@@ -80,7 +80,7 @@ module PorkerJudgeService
       numbers_gaps = []
       i = 0
       while i<=3 do
-        numbers_gap_i = @numbers[i+1].to_i - @numbers[i].to_i
+        numbers_gap_i = (@numbers[i+1].to_i) - (@numbers[i].to_i)
         numbers_gaps.push(numbers_gap_i)
         i+=1
       end
