@@ -42,6 +42,16 @@ RSpec.describe PorkerJudgeService do
 
     context '不適切なカードのエラー' do
 
+      context 'カードがスペース以外で区切られている時' do
+        before do
+          @hands = JudgeHands::JudgeHands.new("S1/D3/H5/C7/S9")
+        end
+        it '不適切な表記を指摘するエラーが出ること' do
+          @hands.valid
+          expect(@hands.error_messages).to include "半角英字大文字のスート（S,H,D,C）と数字（1〜13）の組み合わせで５枚のカードを指定してください。(例)S1 H3 D9 C13 S11"
+        end
+      end
+
       context '余分な文字が含まれている時' do
         before do
           @hands = JudgeHands::JudgeHands.new("S1 D3 H5 C7t S9")
