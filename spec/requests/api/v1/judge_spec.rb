@@ -33,9 +33,9 @@ RSpec.describe 'JudgeAPI', :type => :request do
     end
 
     context 'ボディー' do
-      context '正しいリクエストが送られた時' do
-        it '適切なボディーを返すこと' do
-          params = { "cards": ["S1 S2 S3 S4 S5","S1 S2 S3 S4 S15"] }
+      context '複数の役を含むcardsを渡された時' do
+        it '最も強い役が判定できているか' do
+          params = { "cards": ["S1 S2 S3 S4 S5","S1 D1 H1 S4 S5"] }
           post '/api/v1/cards/judge', params, as: :json
           pattern = {
               "result" => [
@@ -43,11 +43,32 @@ RSpec.describe 'JudgeAPI', :type => :request do
                       "card" => "S1 S2 S3 S4 S5",
                       "hand" => "ストレートフラッシュ",
                       "best" => true
+                  },
+                  {
+                      "card" => "S1 D1 H1 S4 S5",
+                      "hand" => "スリーカード",
+                      "best" => false
                   }
               ],
+              "error" => []
+          }
+          expect(JSON.parse(response.body)).to eq(pattern)
+        end
+      end
+
+      context '一つの組に複数のエラーを含むcardsを渡された時' do
+        it '複数のcardとmsgの組みを返せているか' do
+          params = { "cards": ["S1 S2 S3 G4 S15"] }
+          post '/api/v1/cards/judge', params, as: :json
+          pattern = {
+              "result" => [],
               "error" => [
                   {
-                      "card" => "S1 S2 S3 S4 S15",
+                      "card" => "S1 S2 S3 G4 S15",
+                      "msg" => "4番目のカード指定文字が不正です。(G4)"
+                  },
+                  {
+                      "card" => "S1 S2 S3 G4 S15",
                       "msg" => "5番目のカード指定文字が不正です。(S15)"
                   }
               ]
@@ -55,6 +76,7 @@ RSpec.describe 'JudgeAPI', :type => :request do
           expect(JSON.parse(response.body)).to eq(pattern)
         end
       end
+
     end
 
   end
