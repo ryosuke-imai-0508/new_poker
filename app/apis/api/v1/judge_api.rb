@@ -16,7 +16,6 @@ module API
           result_array = []
           error_array = []
           score_array = []
-          score_true_or_false = []
 
           cards.each do |card|
             @target = JudgeHands.new(card)
@@ -40,6 +39,7 @@ module API
 
           end
 
+          score_true_or_false = []
           score_array.each do |score|
             if score == score_array.max
               score_true_or_false.push(true)
@@ -53,15 +53,6 @@ module API
           @api_result[:error] = []
 
           cards_array.zip(error_array, result_array, score_true_or_false) do |card, error, result, score|
-            unless error == nil
-              @api_result[:error].push(
-                  {
-                      "card": card,
-                      "msg": error
-                  }
-              )
-            end
-
             unless result == nil
               @api_result[:result].push(
                   {
@@ -71,8 +62,17 @@ module API
                   }
               )
             end
-          end
 
+            unless error == nil
+              @api_result[:error].push(
+                  {
+                      "card": card,
+                      "msg": error
+                  }
+              )
+            end
+
+          end
 
           present @api_result
 
