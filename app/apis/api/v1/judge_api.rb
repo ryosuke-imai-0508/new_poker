@@ -21,7 +21,7 @@ module API
             target = JudgeHands.new(card)
             target.valid
             if target.error_messages.present?
-              error_array.push(target.error_messages.join(" / ").html_safe)
+              error_array.push(target.error_messages.join(" / "))
               result_array.push(nil)
               cards_array.push(target.hand_array.join(" "))
               score_array.push(target.score)
