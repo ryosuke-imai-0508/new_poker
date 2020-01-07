@@ -21,14 +21,18 @@ module API
             target = JudgeHands.new(card)
             target.valid
             if target.error_messages.present?
-              i = 0
-              while i < target.error_messages.count do
-                error_array.push(target.error_messages[i])
-                result_array.push(nil)
-                cards_array.push(target.hand_array.join(" "))
-                score_array.push(target.score)
-                i += 1
-              end
+              error_array.push(target.error_messages.join(" / ").html_safe)
+              result_array.push(nil)
+              cards_array.push(target.hand_array.join(" "))
+              score_array.push(target.score)
+              # i = 0
+              # while i < target.error_messages.count do
+              #   error_array.push(target.error_messages[i])
+              #   result_array.push(nil)
+              #   cards_array.push(target.hand_array.join(" "))
+              #   score_array.push(target.score)
+              #   i += 1
+              # end
             else
               target.execute
               result_array.push(target.result)
