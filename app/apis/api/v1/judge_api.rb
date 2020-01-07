@@ -48,13 +48,13 @@ module API
             end
           end
 
-          @api_result = {}
-          @api_result[:result] = []
-          @api_result[:error] = []
+          api_result = {}
+          api_result[:result] = []
+          api_result[:error] = []
 
           cards_array.zip(error_array, result_array, score_true_or_false) do |card, error, result, score|
-            unless result == nil
-              @api_result[:result].push(
+            if result.present?
+              api_result[:result].push(
                   {
                       "card": card,
                       "hand": result,
@@ -63,8 +63,8 @@ module API
               )
             end
 
-            unless error == nil
-              @api_result[:error].push(
+            if error.present?
+              api_result[:error].push(
                   {
                       "card": card,
                       "msg": error
@@ -74,7 +74,7 @@ module API
 
           end
 
-          present @api_result
+          present api_result
 
 
         end
