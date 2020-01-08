@@ -25,14 +25,6 @@ module API
               result_array.push(nil)
               cards_array.push(target.hand_array.join(" "))
               score_array.push(target.score)
-              # i = 0
-              # while i < target.error_messages.count do
-              #   error_array.push(target.error_messages[i])
-              #   result_array.push(nil)
-              #   cards_array.push(target.hand_array.join(" "))
-              #   score_array.push(target.score)
-              #   i += 1
-              # end
             else
               target.execute
               result_array.push(target.result)
@@ -43,14 +35,29 @@ module API
 
           end
 
-          score_true_or_false = []
-          score_array.each do |score|
-            if score == score_array.max
-              score_true_or_false.push(true)
-            else
-              score_true_or_false.push(false)
+          helpers do
+            def judge_best(array)
+              score_true_or_false = []
+              array.each do |score|
+                if score == array.max
+                  score_true_or_false.push(true)
+                else
+                  score_true_or_false.push(false)
+                end
+              end
             end
           end
+
+          judge_best(score_array)
+
+          # score_true_or_false = []
+          # score_array.each do |score|
+          #   if score == score_array.max
+          #     score_true_or_false.push(true)
+          #   else
+          #     score_true_or_false.push(false)
+          #   end
+          # end
 
           api_result = {}
           api_result[:result] = []

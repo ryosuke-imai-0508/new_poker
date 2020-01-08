@@ -1,5 +1,6 @@
 module API
   class Base < Grape::API
+
     prefix :api
     format :json
 
@@ -13,9 +14,9 @@ module API
     end
 
 #   500の時（それ以外の予期しないエラー）
-    rescue_from Exception do
-      error!({msg: "500 Internal Server Error：予期しないエラーです。"}, 500)
-    end
+#     rescue_from Exception do
+#       error!({msg: "500 Internal Server Error：予期しないエラーです。"}, 500)
+#     end
 
     mount API::V1::RootAPI
   end
