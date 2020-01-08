@@ -57,7 +57,7 @@ RSpec.describe 'JudgeAPI', :type => :request do
       end
 
       context '一つの組に複数のエラーを含むcardsを渡された時' do
-        it '複数のcardとmsgの組みを返せているか' do
+        it '複数のエラーを結合してmsgに表示できているか' do
           params = { "cards": ["S1 S2 S3 G4 S15"] }
           post '/api/v1/cards/judge', params, as: :json
           pattern = {
