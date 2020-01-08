@@ -278,4 +278,3 @@ RSpec.describe PorkerJudgeService do
   end
 
 end
-
