@@ -3,7 +3,7 @@ module PorkerJudgeService
 
   class JudgeHands
 
-    attr_accessor :hand_array, :cards, :hands, :result, :error_messages
+    attr_accessor :hand_array, :cards, :hands, :result, :error_messages, :score, :numbers, :suits
 
     def initialize(card)
       @cards = card
@@ -27,7 +27,7 @@ module PorkerJudgeService
         @numbers = []
         @hand_array.each do |hand|
           @suits.push(hand.slice(0).to_s)
-          @numbers.push(hand.gsub(/[^\d]/, "").to_s)
+          @numbers.push(hand.gsub(/[^\d]/, ""))
         end
 
 #   取り出したスートと数字を再度並べてみる:もともとのものと比較するため
@@ -64,12 +64,15 @@ module PorkerJudgeService
 
 #   重複がないか
         if hand_check.uniq.count != hand_check.count && @error_messages.blank?
-          error_message5 = "カードが重複しています"
+          error_message5 = "カードが重複しています。"
           @error_messages.push(error_message5)
         end
 
       end
       #if (@hand_array.size.to_i != 5)のend
+
+      @score = 0
+
     end
     #def validのend
 #   エラーここまで
@@ -80,40 +83,50 @@ module PorkerJudgeService
       numbers_gaps = []
       i = 0
       while i<=3 do
-        numbers_gap_i = @numbers[i+1].to_i - @numbers[i].to_i
+        numbers_gap_i = (@numbers[i+1].to_i) - (@numbers[i].to_i)
         numbers_gaps.push(numbers_gap_i)
         i+=1
       end
 
+#   数字の組を表すハッシュを作る（→.valuesで数だけを取り出した配列を作って使う）
+      numbers_count = @numbers.group_by(&:itself).map{ |key, value| [key, value.count] }.to_h
+
 #   ストレートフラッシュの判定
-      if((@suits.uniq.count == 1) &&
-          ((numbers_gaps.uniq == [1]) ||(numbers_gaps.sort == [1,1,1,9])))
+      if((@suits.uniq.count == 1) && ((numbers_gaps.uniq == [1]) ||(numbers_gaps.sort == [1,1,1,9])))
         @result = "ストレートフラッシュ"
+        @score = 9
 #   フォーカードの判定
-      elsif(@numbers.grep("#{@numbers.uniq[0]}").size == 4 && (@numbers.grep("#{@numbers.uniq[1]}").size == 1))
+      elsif(numbers_count.values.sort == [1,4])
         @result = "フォーカード"
+        @score = 8
 #   フルハウスの判定
-      elsif(@numbers.grep("#{@numbers.uniq[0]}").size == 3 && (@numbers.grep("#{@numbers.uniq[1]}").size == 2))
+      elsif(numbers_count.values.sort == [2,3])
         @result = "フルハウス"
+        @score = 7
 #   フラッシュの判定
       elsif(@suits.uniq.count == 1)
         @result = "フラッシュ"
+        @score = 6
 #   ストレートの判定
       elsif((numbers_gaps.uniq == [1]) || (numbers_gaps.sort == [1,1,1,9]))
         @result = "ストレート"
+        @score = 5
 #   スリーカードの判定
-      elsif(@numbers.grep("#{@numbers.uniq[0]}").size == 3 && (@numbers.grep("#{@numbers.uniq[1]}").size == 1) &&
-          (@numbers.grep("#{@numbers.uniq[2]}").size == 1))
+        elsif(numbers_count.values.sort == [1,1,3])
         @result = "スリーカード"
+        @score = 4
 #   ツーペアの判定
-      elsif(@numbers.uniq.count == 3)
+      elsif(numbers_count.values.sort == [1,2,2])
         @result = "ツーペア"
+        @score = 3
 #   ワンペアの判定
-      elsif(@numbers.uniq.count == 4)
+      elsif(numbers_count.values.sort == [1,1,1,2])
         @result = "ワンペア"
+        @score = 2
 #   その他
       else
         @result = "ハイカード"
+        @score = 1
       end
       #役判定のifのend
     end
