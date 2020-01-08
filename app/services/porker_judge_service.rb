@@ -3,7 +3,7 @@ module PorkerJudgeService
 
   class JudgeHands
 
-    attr_accessor :hand_array, :cards, :hands, :result, :error_messages, :score
+    attr_accessor :hand_array, :cards, :hands, :result, :error_messages, :score, :numbers, :suits
 
     def initialize(card)
       @cards = card
@@ -96,11 +96,11 @@ module PorkerJudgeService
         @result = "ストレートフラッシュ"
         @score = 9
 #   フォーカードの判定
-      elsif((numbers_count.values == [1,4]) || (numbers_count.values == [4,1]))
+      elsif(numbers_count.values.sort == [1,4])
         @result = "フォーカード"
         @score = 8
 #   フルハウスの判定
-      elsif((numbers_count.values == [2,3]) || (numbers_count.values == [3,2]))
+      elsif(numbers_count.values.sort == [2,3])
         @result = "フルハウス"
         @score = 7
 #   フラッシュの判定
@@ -112,15 +112,15 @@ module PorkerJudgeService
         @result = "ストレート"
         @score = 5
 #   スリーカードの判定
-        elsif((numbers_count.values == [1,1,3]) || (numbers_count.values == [1,3,1]) || (numbers_count.values == [1,1,3]))
+        elsif(numbers_count.values.sort == [1,1,3])
         @result = "スリーカード"
         @score = 4
 #   ツーペアの判定
-      elsif(@numbers.uniq.count == 3)
+      elsif(numbers_count.values.sort == [1,2,2])
         @result = "ツーペア"
         @score = 3
 #   ワンペアの判定
-      elsif(@numbers.uniq.count == 4)
+      elsif(numbers_count.values.sort == [1,1,1,2])
         @result = "ワンペア"
         @score = 2
 #   その他
