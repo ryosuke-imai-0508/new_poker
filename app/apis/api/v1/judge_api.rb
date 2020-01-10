@@ -8,6 +8,20 @@ module API
         requires :cards, type: Array
       end
 
+      helpers do
+        def judge_best(array)
+          score_true_or_false = []
+          array.each do |score|
+            if score == array.max
+              score_true_or_false.push(true)
+            else
+              score_true_or_false.push(false)
+            end
+          end
+          score_true_or_false
+        end
+      end
+
   #   http://localhost:3000/api/v1/cards/judge
       resource :cards do
         post '/judge' do
@@ -35,20 +49,7 @@ module API
 
           end
 
-          helpers do
-            def judge_best(array)
-              score_true_or_false = []
-              array.each do |score|
-                if score == array.max
-                  score_true_or_false.push(true)
-                else
-                  score_true_or_false.push(false)
-                end
-              end
-            end
-          end
-
-          judge_best(score_array)
+          score_true_or_false = judge_best(score_array)
 
           # score_true_or_false = []
           # score_array.each do |score|
