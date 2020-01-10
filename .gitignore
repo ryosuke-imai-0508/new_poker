@@ -15,3 +15,9 @@
 
 # Ignore Byebug command history file.
 .byebug_history
+
+# User-specific stuff:
+/.idea/
+workspace.xml
+.idea/workspace.xml
+
